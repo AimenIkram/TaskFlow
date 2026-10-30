@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { TASK_STATUS } from '../data/tasks';
+import { TASK_STATUS, TASK_PRIORITY, PRIORITY_OPTIONS } from '../data/tasks';
 
 /**
  * Generates a stable, unique task identifier.
@@ -21,6 +21,7 @@ const generateTaskId = () => {
 
 function AddTaskModal({
   isOpen,
+  categories = [],
   onClose,
   onAddTask,
   taskToEdit = null,
@@ -28,9 +29,32 @@ function AddTaskModal({
 }) {
   const isEditMode = Boolean(taskToEdit);
 
-  // Controlled form state initialized from taskToEdit (if editing) or empty (if creating)
+  // Derive initial category ID: prefer taskToEdit.categoryId, fallback to matching name, or first category
+  const initialCategoryId = (() => {
+    if (taskToEdit?.categoryId) return taskToEdit.categoryId;
+    if (taskToEdit?.category) {
+      const match = categories.find(
+        (c) => c.name.toLowerCase() === taskToEdit.category.toLowerCase()
+      );
+      if (match) return match.id;
+    }
+    return categories[0]?.id || '';
+  })();
+
+  // Derive initial due date in YYYY-MM-DD format if valid
+  const initialDueDate = (() => {
+    if (taskToEdit?.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(taskToEdit.dueDate)) {
+      return taskToEdit.dueDate;
+    }
+    return '';
+  })();
+
+  // Controlled form state initialized from taskToEdit (if editing) or defaults
   const [title, setTitle] = useState(taskToEdit ? taskToEdit.title : '');
   const [description, setDescription] = useState(taskToEdit ? taskToEdit.description : '');
+  const [categoryId, setCategoryId] = useState(initialCategoryId);
+  const [priority, setPriority] = useState(taskToEdit?.priority || TASK_PRIORITY.MEDIUM);
+  const [dueDate, setDueDate] = useState(initialDueDate);
 
   // Handle closing with the Escape key & locking background scroll while mounted
   useEffect(() => {
@@ -65,33 +89,34 @@ function AddTaskModal({
       return;
     }
 
+    const matchedCategory = categories.find((c) => c.id === categoryId);
+
     if (isEditMode) {
-      // Preserve existing ID, status, priority, category, due date, etc.
+      // Preserve existing ID and status, update title, description, category, priority, due date
       const updatedTask = {
         ...taskToEdit,
         title: trimmedTitle,
-        description: description.trim()
+        description: description.trim(),
+        categoryId: categoryId || null,
+        category: matchedCategory?.name || null,
+        priority: priority || TASK_PRIORITY.MEDIUM,
+        dueDate: dueDate || null
       };
 
       if (onUpdateTask) {
         onUpdateTask(updatedTask);
       }
     } else {
-      // Format current date for due date
-      const formattedDate = new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric'
-      });
-
-      // Construct new task object adhering to existing task schema
+      // Construct new task object adhering to updated task schema
       const newTask = {
         id: generateTaskId(),
         title: trimmedTitle,
         description: description.trim(),
         status: TASK_STATUS.TODO, // Default to To Do column
-        priority: 'medium', // Sensible default priority
-        dueDate: formattedDate,
-        category: 'Work' // Sensible default category
+        categoryId: categoryId || null,
+        category: matchedCategory?.name || null,
+        priority: priority || TASK_PRIORITY.MEDIUM,
+        dueDate: dueDate || null
       };
 
       if (onAddTask) {
@@ -163,11 +188,67 @@ function AddTaskModal({
             <textarea
               id="task-desc"
               className="form-textarea"
-              rows={4}
+              rows={3}
               placeholder="Provide context, acceptance criteria, or notes about this task..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+          </div>
+
+          {/* Category, Priority, and Due Date 3-column Grid */}
+          <div className="form-row-grid">
+            {/* Category Field */}
+            <div className="form-group">
+              <label htmlFor="task-category" className="form-label">
+                Category
+              </label>
+              <select
+                id="task-category"
+                className="form-select"
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+              >
+                <option value="">No Category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Priority Field */}
+            <div className="form-group">
+              <label htmlFor="task-priority" className="form-label">
+                Priority
+              </label>
+              <select
+                id="task-priority"
+                className="form-select"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+              >
+                {PRIORITY_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Due Date Field */}
+            <div className="form-group">
+              <label htmlFor="task-due-date" className="form-label">
+                Due Date
+              </label>
+              <input
+                id="task-due-date"
+                type="date"
+                className="form-input"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Modal Actions Footer */}

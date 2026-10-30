@@ -3,24 +3,67 @@
  * Displays a single task item inside a Kanban column with an edit action.
  */
 
-import { Calendar, Pencil, Trash2, Check } from 'lucide-react';
-import { TASK_STATUS } from '../../data/tasks';
+import { Calendar, Pencil, Trash2, Check, AlertCircle } from 'lucide-react';
+import { TASK_STATUS, formatDueDate, isTaskOverdue } from '../../data/tasks';
 
-function TaskCard({ task, onEdit, onDelete, onComplete, onStatusChange }) {
-  const { title, description, priority, dueDate, category, status } = task;
+function TaskCard({
+  task,
+  categories = [],
+  onEdit,
+  onDelete,
+  onComplete,
+  onStatusChange
+}) {
+  const { title, description, priority, dueDate, category, categoryId, status } = task;
   const isCompleted = status === TASK_STATUS.COMPLETED;
+  const isOverdue = isTaskOverdue(task);
+
+  // Resolve category from shared categories collection via categoryId with name fallback
+  const matchedCategory = categories.find(
+    (c) => c.id === categoryId || (category && c.name.toLowerCase() === category.toLowerCase())
+  );
 
   return (
     <article
-      className={`task-card${isCompleted ? ' task-card--completed' : ''}`}
+      className={`task-card${isCompleted ? ' task-card--completed' : ''}${isOverdue ? ' task-card--overdue' : ''}`}
       aria-label={`Task: ${title}`}
     >
-      {/* Card Header: Category & Priority Badge */}
+      {/* Card Header: Category, Priority, and Overdue Badge */}
       <div className="task-card-header">
-        {category && <span className="task-category-badge">{category}</span>}
-        <span className={`task-priority-badge priority-${priority}`}>
-          {priority.charAt(0).toUpperCase() + priority.slice(1)}
-        </span>
+        <div className="task-card-header-badges">
+          {matchedCategory ? (
+            <span
+              className="task-category-badge"
+              style={{
+                backgroundColor: `${matchedCategory.color}15`,
+                color: matchedCategory.color,
+                borderColor: `${matchedCategory.color}35`
+              }}
+            >
+              <span
+                className="category-dot"
+                style={{ backgroundColor: matchedCategory.color }}
+                aria-hidden="true"
+              />
+              <span>{matchedCategory.name}</span>
+            </span>
+          ) : category ? (
+            <span className="task-category-badge">{category}</span>
+          ) : null}
+
+          {priority && (
+            <span className={`task-priority-badge priority-${priority.toLowerCase()}`}>
+              {priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase()}
+            </span>
+          )}
+        </div>
+
+        {isOverdue && (
+          <span className="task-overdue-badge" title="Task is overdue">
+            <AlertCircle size={11} strokeWidth={2.5} aria-hidden="true" />
+            <span>Overdue</span>
+          </span>
+        )}
       </div>
 
       {/* Card Body: Title & Description */}
@@ -31,10 +74,17 @@ function TaskCard({ task, onEdit, onDelete, onComplete, onStatusChange }) {
 
       {/* Card Footer: Metadata (Due Date) & Actions */}
       <footer className="task-card-footer">
-        <span className="task-due-date" title={`Due ${dueDate}`}>
-          <Calendar size={13} strokeWidth={2} aria-hidden="true" />
-          <span>{dueDate}</span>
-        </span>
+        {dueDate ? (
+          <span
+            className={`task-due-date${isOverdue ? ' task-due-date--overdue' : ''}`}
+            title={isOverdue ? `Overdue (was due ${dueDate})` : `Due ${dueDate}`}
+          >
+            <Calendar size={13} strokeWidth={2} aria-hidden="true" />
+            <span>{formatDueDate(dueDate)}</span>
+          </span>
+        ) : (
+          <span />
+        )}
 
         <div className="task-card-actions">
           {/* Status selector dropdown */}

@@ -8,14 +8,24 @@ import SearchBar from './ui/SearchBar';
 
 function Navbar({
   pageTitle = 'Dashboard',
-  parentTitle = 'Workspace'
+  parentTitle = 'Workspace',
+  onNavigate,
+  searchQuery = '',
+  onSearchChange
 }) {
   return (
     <header className="navbar" aria-label="Top Navigation">
       {/* Left Area: Breadcrumbs & View Title */}
       <div className="navbar-left">
         <nav className="navbar-breadcrumb" aria-label="Breadcrumb">
-          <span className="breadcrumb-item">{parentTitle}</span>
+          <button
+            type="button"
+            className="breadcrumb-item-btn"
+            onClick={() => onNavigate && onNavigate('dashboard')}
+            title="Go to Dashboard"
+          >
+            {parentTitle}
+          </button>
           <ChevronRight size={14} className="breadcrumb-separator" aria-hidden="true" />
           <h1 className="breadcrumb-current">{pageTitle}</h1>
         </nav>
@@ -23,7 +33,11 @@ function Navbar({
 
       {/* Center Area: Search Bar */}
       <div className="navbar-center">
-        <SearchBar />
+        <SearchBar
+          value={searchQuery}
+          onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+          placeholder="Search tasks by title..."
+        />
       </div>
 
       {/* Right Area: Action Controls & User Profile */}

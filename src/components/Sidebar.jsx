@@ -3,21 +3,22 @@
  * Implements the brand header, main navigation, categories, and settings footer.
  */
 
-import { useState } from 'react';
-import { CheckCheck } from 'lucide-react';
+import { CheckCheck, Settings2 } from 'lucide-react';
 import NavItem from './ui/NavItem';
 import {
   MAIN_NAV_ITEMS,
-  CATEGORY_ITEMS,
   SECONDARY_NAV_ITEMS
 } from '../data/navigation';
+import { DEFAULT_CATEGORIES } from '../data/categories';
 
-function Sidebar({ currentActiveId, onNavigate }) {
-  // Local state for active item tracking (defaults to 'dashboard')
-  const [activeId, setActiveId] = useState(currentActiveId || 'dashboard');
+function Sidebar({
+  categories = DEFAULT_CATEGORIES,
+  currentActiveId = 'dashboard',
+  onNavigate
+}) {
+  const activeId = currentActiveId;
 
   const handleItemClick = (id) => {
-    setActiveId(id);
     if (onNavigate) {
       onNavigate(id);
     }
@@ -59,13 +60,24 @@ function Sidebar({ currentActiveId, onNavigate }) {
 
         {/* Categories Section */}
         <section className="nav-section" aria-label="Categories">
-          <h2 className="nav-section-title">Categories</h2>
+          <div className="nav-section-header">
+            <h2 className="nav-section-title">Categories</h2>
+            <button
+              type="button"
+              className={`nav-section-action-btn ${activeId === 'categories' ? 'active' : ''}`}
+              onClick={() => handleItemClick('categories')}
+              title="Manage Categories"
+              aria-label="Manage Categories"
+            >
+              <Settings2 size={13} aria-hidden="true" />
+            </button>
+          </div>
           <ul className="nav-list">
-            {CATEGORY_ITEMS.map((category) => (
+            {categories.map((category) => (
               <NavItem
                 key={category.id}
                 colorDot={category.color}
-                label={category.label}
+                label={category.name || category.label}
                 badge={category.badge}
                 isActive={activeId === category.id}
                 onClick={() => handleItemClick(category.id)}

@@ -9,6 +9,7 @@ import TaskCard from './ui/TaskCard';
 function KanbanColumn({
   column,
   tasks = [],
+  categories = [],
   onEditTask,
   onDeleteTask,
   onCompleteTask,
@@ -41,6 +42,7 @@ function KanbanColumn({
             <TaskCard
               key={task.id}
               task={task}
+              categories={categories}
               onEdit={onEditTask}
               onDelete={onDeleteTask}
               onComplete={onCompleteTask}
