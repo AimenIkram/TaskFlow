@@ -61,6 +61,11 @@
   --color-priority-low: #3b82f6;
   --color-priority-low-bg: #eff6ff;
 
+  /* Destructive & Danger Action Colors */
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+  --color-danger-bg: #fef2f2;
+
   /* ==========================================================================
      Typography
      ========================================================================== */

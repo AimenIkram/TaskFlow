@@ -3,9 +3,10 @@
  * Represents a single workflow stage containing a list of TaskCards.
  */
 
+import { Inbox } from 'lucide-react';
 import TaskCard from './ui/TaskCard';
 
-function KanbanColumn({ column, tasks = [] }) {
+function KanbanColumn({ column, tasks = [], onEditTask, onDeleteTask, onCompleteTask }) {
   const { title, icon: Icon, color } = column;
 
   return (
@@ -29,9 +30,21 @@ function KanbanColumn({ column, tasks = [] }) {
       {/* Task Cards Stack */}
       <div className="kanban-cards-stack">
         {tasks.length > 0 ? (
-          tasks.map((task) => <TaskCard key={task.id} task={task} />)
+          tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onEdit={onEditTask}
+              onDelete={onDeleteTask}
+              onComplete={onCompleteTask}
+            />
+          ))
         ) : (
-          <div className="kanban-empty-state">No tasks in this stage</div>
+          <div className="kanban-empty-state">
+            <Inbox size={22} strokeWidth={1.5} className="kanban-empty-icon" aria-hidden="true" />
+            <p className="kanban-empty-title">No tasks in {title.toLowerCase()}</p>
+            <span className="kanban-empty-hint">Tasks in this stage will appear here</span>
+          </div>
         )}
       </div>
     </section>

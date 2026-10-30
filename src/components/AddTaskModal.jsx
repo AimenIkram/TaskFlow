@@ -1,15 +1,35 @@
 /**
  * AddTaskModal Component
- * Modal dialog for creating new tasks with controlled title and description inputs.
+ * Reusable modal dialog for creating and editing tasks with controlled inputs.
  */
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-function AddTaskModal({ isOpen, onClose, onAddTask }) {
-  // Controlled form state for title and description
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+/**
+ * Generates a stable, unique task identifier.
+ * Uses browser-native crypto.randomUUID() if supported, with a reliable
+ * timestamp + random alphanumeric fallback for older/restricted environments.
+ */
+const generateTaskId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `task-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+};
+
+function AddTaskModal({
+  isOpen,
+  onClose,
+  onAddTask,
+  taskToEdit = null,
+  onUpdateTask
+}) {
+  const isEditMode = Boolean(taskToEdit);
+
+  // Controlled form state initialized from taskToEdit (if editing) or empty (if creating)
+  const [title, setTitle] = useState(taskToEdit ? taskToEdit.title : '');
+  const [description, setDescription] = useState(taskToEdit ? taskToEdit.description : '');
 
   // Handle closing with the Escape key & locking background scroll while mounted
   useEffect(() => {
@@ -35,7 +55,7 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
     }
   };
 
-  // Form submission handler
+  // Form submission handler supporting both create and edit modes
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -44,25 +64,38 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
       return;
     }
 
-    // Format current date (e.g. "Oct 31") for due date
-    const formattedDate = new Date().toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
-    });
+    if (isEditMode) {
+      // Preserve existing ID, status, priority, category, due date, etc.
+      const updatedTask = {
+        ...taskToEdit,
+        title: trimmedTitle,
+        description: description.trim()
+      };
 
-    // Construct new task object adhering to existing task schema
-    const newTask = {
-      id: `task-${Date.now()}`,
-      title: trimmedTitle,
-      description: description.trim(),
-      status: 'todo', // Default to To Do column
-      priority: 'medium', // Sensible default priority
-      dueDate: formattedDate,
-      category: 'Work' // Sensible default category
-    };
+      if (onUpdateTask) {
+        onUpdateTask(updatedTask);
+      }
+    } else {
+      // Format current date for due date
+      const formattedDate = new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
 
-    if (onAddTask) {
-      onAddTask(newTask);
+      // Construct new task object adhering to existing task schema
+      const newTask = {
+        id: generateTaskId(),
+        title: trimmedTitle,
+        description: description.trim(),
+        status: 'todo', // Default to To Do column
+        priority: 'medium', // Sensible default priority
+        dueDate: formattedDate,
+        category: 'Work' // Sensible default category
+      };
+
+      if (onAddTask) {
+        onAddTask(newTask);
+      }
     }
 
     // Close modal
@@ -83,8 +116,14 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
         {/* Modal Header */}
         <header className="modal-header">
           <div className="modal-header-info">
-            <h2 id="modal-title" className="modal-title">Create New Task</h2>
-            <p className="modal-subtitle">Add the key details to organize your workflow.</p>
+            <h2 id="modal-title" className="modal-title">
+              {isEditMode ? 'Edit Task' : 'Create New Task'}
+            </h2>
+            <p className="modal-subtitle">
+              {isEditMode
+                ? 'Update the details for this task.'
+                : 'Add the key details to organize your workflow.'}
+            </p>
           </div>
           <button
             type="button"
@@ -143,9 +182,9 @@ function AddTaskModal({ isOpen, onClose, onAddTask }) {
               type="submit"
               className="btn-primary"
               disabled={!title.trim()}
-              title={!title.trim() ? 'Please enter a task title' : 'Create Task'}
+              title={!title.trim() ? 'Please enter a task title' : (isEditMode ? 'Save Changes' : 'Create Task')}
             >
-              Create Task
+              {isEditMode ? 'Save Changes' : 'Create Task'}
             </button>
           </footer>
         </form>
