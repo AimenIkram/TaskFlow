@@ -4,10 +4,11 @@
  */
 
 import { Calendar, Pencil, Trash2, Check } from 'lucide-react';
+import { TASK_STATUS } from '../../data/tasks';
 
-function TaskCard({ task, onEdit, onDelete, onComplete }) {
+function TaskCard({ task, onEdit, onDelete, onComplete, onStatusChange }) {
   const { title, description, priority, dueDate, category, status } = task;
-  const isCompleted = status === 'completed';
+  const isCompleted = status === TASK_STATUS.COMPLETED;
 
   return (
     <article
@@ -36,6 +37,25 @@ function TaskCard({ task, onEdit, onDelete, onComplete }) {
         </span>
 
         <div className="task-card-actions">
+          {/* Status selector dropdown */}
+          {onStatusChange && (
+            <select
+              className={`task-status-select task-status-select--${status}`}
+              value={status}
+              onChange={(e) => {
+                e.stopPropagation();
+                onStatusChange(task, e.target.value);
+              }}
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Change status for "${title}"`}
+              title="Change status"
+            >
+              <option value={TASK_STATUS.TODO}>To Do</option>
+              <option value={TASK_STATUS.IN_PROGRESS}>In Progress</option>
+              <option value={TASK_STATUS.COMPLETED}>Completed</option>
+            </select>
+          )}
+
           {/* Mark as completed: only rendered if task is not already completed */}
           {onComplete && !isCompleted && (
             <button

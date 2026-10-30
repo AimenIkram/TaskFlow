@@ -6,7 +6,14 @@
 import { Inbox } from 'lucide-react';
 import TaskCard from './ui/TaskCard';
 
-function KanbanColumn({ column, tasks = [], onEditTask, onDeleteTask, onCompleteTask }) {
+function KanbanColumn({
+  column,
+  tasks = [],
+  onEditTask,
+  onDeleteTask,
+  onCompleteTask,
+  onStatusChange
+}) {
   const { title, icon: Icon, color } = column;
 
   return (
@@ -37,6 +44,7 @@ function KanbanColumn({ column, tasks = [], onEditTask, onDeleteTask, onComplete
               onEdit={onEditTask}
               onDelete={onDeleteTask}
               onComplete={onCompleteTask}
+              onStatusChange={onStatusChange}
             />
           ))
         ) : (

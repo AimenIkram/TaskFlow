@@ -11,7 +11,7 @@ import DashboardStats from './components/DashboardStats';
 import KanbanBoard from './components/KanbanBoard';
 import AddTaskModal from './components/AddTaskModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
-import { SAMPLE_TASKS } from './data/tasks';
+import { SAMPLE_TASKS, TASK_STATUS } from './data/tasks';
 
 function App() {
   // State to manage whether the task modal is open
@@ -68,13 +68,18 @@ function App() {
     );
   };
 
-  // Handler to mark a task as completed immutably using map()
-  const handleCompleteTask = (taskToComplete) => {
+  // Handler to update a task's status immutably using map() and object spread
+  const handleStatusChange = (taskToUpdate, newStatus) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
-        task.id === taskToComplete.id ? { ...task, status: 'completed' } : task
+        task.id === taskToUpdate.id ? { ...task, status: newStatus } : task
       )
     );
+  };
+
+  // Handler to mark a task as completed immutably using map()
+  const handleCompleteTask = (taskToComplete) => {
+    handleStatusChange(taskToComplete, TASK_STATUS.COMPLETED);
   };
 
   // Handler to confirm deletion: removes only the selected task immutably via filter()
@@ -117,8 +122,8 @@ function App() {
             </div>
           </header>
 
-          {/* Key Metric Overview Cards */}
-          <DashboardStats />
+          {/* Key Metric Overview Cards dynamically derived from tasks state */}
+          <DashboardStats tasks={tasks} />
 
           {/* Main Kanban Task Board */}
           <section className="board-section" aria-label="Kanban Workflow Board">
@@ -128,6 +133,7 @@ function App() {
               onDeleteTask={handleOpenDeleteModal}
               onCompleteTask={handleCompleteTask}
               onOpenAddModal={handleOpenAddModal}
+              onStatusChange={handleStatusChange}
             />
           </section>
         </main>

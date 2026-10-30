@@ -896,6 +896,8 @@
   justify-content: space-between;
   padding-top: var(--space-2);
   border-top: 1px solid var(--color-border-subtle);
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 .task-due-date {
@@ -911,6 +913,52 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+/* Status Selector Dropdown */
+.task-status-select {
+  font-family: inherit;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  padding: 2px var(--space-1-5);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  outline: none;
+  line-height: 1.2;
+  transition: border-color var(--transition-fast),
+              background-color var(--transition-fast),
+              color var(--transition-fast);
+}
+
+.task-status-select:hover {
+  border-color: var(--color-brand);
+}
+
+.task-status-select:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 2px var(--color-brand-light);
+}
+
+.task-status-select--todo {
+  color: var(--color-status-todo);
+  background-color: var(--color-status-todo-bg);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.task-status-select--in-progress {
+  color: var(--color-status-progress);
+  background-color: var(--color-status-progress-bg);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.task-status-select--completed {
+  color: var(--color-status-completed);
+  background-color: var(--color-status-completed-bg);
+  border-color: rgba(16, 185, 129, 0.25);
 }
 
 .task-action-btn {

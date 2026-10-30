@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { TASK_STATUS } from '../data/tasks';
 
 /**
  * Generates a stable, unique task identifier.
@@ -87,7 +88,7 @@ function AddTaskModal({
         id: generateTaskId(),
         title: trimmedTitle,
         description: description.trim(),
-        status: 'todo', // Default to To Do column
+        status: TASK_STATUS.TODO, // Default to To Do column
         priority: 'medium', // Sensible default priority
         dueDate: formattedDate,
         category: 'Work' // Sensible default category

@@ -12,7 +12,8 @@ function KanbanBoard({
   onEditTask,
   onDeleteTask,
   onCompleteTask,
-  onOpenAddModal
+  onOpenAddModal,
+  onStatusChange
 }) {
   // If no tasks exist across the entire board, display a helpful board empty state
   if (tasks.length === 0) {
@@ -53,6 +54,7 @@ function KanbanBoard({
             onEditTask={onEditTask}
             onDeleteTask={onDeleteTask}
             onCompleteTask={onCompleteTask}
+            onStatusChange={onStatusChange}
           />
         );
       })}
