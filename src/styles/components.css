@@ -1,0 +1,952 @@
+/**
+ * TaskFlow Shared Components & Layout Styles
+ * Organized logically from application shell down to specific UI components.
+ */
+
+/* ==========================================================================
+   1. Application Shell Layout
+   ========================================================================== */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--color-bg-app);
+}
+
+.app-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents flexbox overflow */
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+  padding: var(--space-8);
+}
+
+/* ==========================================================================
+   2. Sidebar Component
+   ========================================================================== */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-surface);
+  border-right: 1px solid var(--color-border);
+  user-select: none;
+  z-index: 10;
+}
+
+/* Sidebar Branding Header */
+.sidebar-header {
+  height: var(--header-height);
+  padding: 0 var(--space-5);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-brand) 0%, #6366f1 100%);
+  color: var(--color-text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  line-height: var(--line-height-tight);
+}
+
+.brand-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Sidebar Scrollable Body */
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.sidebar-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: var(--radius-full);
+}
+
+.sidebar-content:hover::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+}
+
+/* Sidebar Navigation Sections */
+.nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nav-section-title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 var(--space-3) var(--space-1-5);
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+/* NavItem Button Primitive */
+.nav-item-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  text-align: left;
+}
+
+.nav-item-btn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.nav-item-btn.active {
+  background-color: var(--color-bg-active);
+  color: var(--color-text-brand);
+  font-weight: var(--font-weight-semibold);
+}
+
+.nav-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.nav-item-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-item-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-badge-bg);
+  color: var(--color-badge-text);
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.nav-item-btn.active .nav-item-badge {
+  background-color: var(--color-badge-active-bg);
+  color: var(--color-badge-active-text);
+}
+
+.category-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* Sidebar Footer & User Profile */
+.sidebar-footer {
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background-color: var(--color-bg-surface);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-1);
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-avatar-bg);
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+/* ==========================================================================
+   3. Top Navigation Bar (Navbar)
+   ========================================================================== */
+.navbar {
+  height: var(--header-height);
+  min-height: var(--header-height);
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  user-select: none;
+}
+
+/* Breadcrumb Navigation */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.navbar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.breadcrumb-item {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+.breadcrumb-separator {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.breadcrumb-current {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1;
+}
+
+/* Center Search Container & SearchBar Component */
+.navbar-center {
+  flex: 1;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.search-bar:hover {
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-text-muted);
+}
+
+.search-bar:focus-within {
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-light);
+}
+
+.search-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: var(--space-3);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.search-bar:focus-within .search-icon-wrapper {
+  color: var(--color-brand);
+}
+
+.search-input {
+  width: 100%;
+  height: 36px;
+  border: none;
+  background: transparent;
+  padding: 0 var(--space-2);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.search-shortcut {
+  display: flex;
+  align-items: center;
+  padding-right: var(--space-2-5);
+  pointer-events: none;
+}
+
+.search-kbd {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  padding: 1px 5px;
+  line-height: 1.2;
+}
+
+/* Action Controls & Profile */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  flex-shrink: 0;
+}
+
+.navbar-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  position: relative;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.navbar-icon-btn:hover {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.notification-indicator {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-brand);
+  border: 1.5px solid var(--color-bg-surface);
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 22px;
+  background-color: var(--color-border);
+  margin: 0 var(--space-1);
+}
+
+.navbar-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.navbar-profile:hover {
+  background-color: var(--color-bg-subtle);
+}
+
+.navbar-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-avatar-bg);
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.navbar-profile-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-profile-name {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.navbar-profile-role {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+/* ==========================================================================
+   4. Dashboard Page Header & Actions
+   ========================================================================== */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.page-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.page-header-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.page-header-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background-color: var(--color-brand);
+  color: var(--color-text-inverse);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2);
+  transition: background-color var(--transition-fast),
+              transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-brand-hover);
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   5. Dashboard Statistics Grid & StatCards
+   ========================================================================== */
+.stats-section {
+  width: 100%;
+  margin-bottom: var(--space-8);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.stat-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast),
+              border-color var(--transition-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-brand-border);
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.stat-card-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.stat-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.stat-card:hover .stat-card-icon {
+  transform: scale(1.05);
+}
+
+/* Metric Status Variants */
+.stat-card--total .stat-card-icon {
+  background-color: var(--color-status-total-bg);
+  color: var(--color-status-total);
+}
+
+.stat-card--todo .stat-card-icon {
+  background-color: var(--color-status-todo-bg);
+  color: var(--color-status-todo);
+}
+
+.stat-card--progress .stat-card-icon {
+  background-color: var(--color-status-progress-bg);
+  color: var(--color-status-progress);
+}
+
+.stat-card--completed .stat-card-icon {
+  background-color: var(--color-status-completed-bg);
+  color: var(--color-status-completed);
+}
+
+.stat-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stat-card-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.stat-card-subtext {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+/* ==========================================================================
+   6. Kanban Task Board & Cards
+   ========================================================================== */
+.board-section {
+  width: 100%;
+}
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.kanban-column {
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-1);
+}
+
+.kanban-column-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.kanban-column-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kanban-column-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.kanban-column-count {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-2);
+  line-height: 1.4;
+}
+
+.kanban-column-bar {
+  height: 3px;
+  width: 100%;
+  border-radius: var(--radius-full);
+  margin-top: calc(-1 * var(--space-1));
+  margin-bottom: var(--space-1);
+}
+
+.kanban-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 120px;
+}
+
+.kanban-empty-state {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-surface);
+}
+
+/* Individual TaskCard */
+.task-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast),
+              border-color var(--transition-fast);
+  cursor: pointer;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-brand-border);
+}
+
+.task-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.task-category-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-subtle);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-xs);
+}
+
+.task-priority-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-xs);
+  line-height: 1.2;
+}
+
+.priority-high {
+  background-color: var(--color-priority-high-bg);
+  color: var(--color-priority-high);
+}
+
+.priority-medium {
+  background-color: var(--color-priority-medium-bg);
+  color: var(--color-priority-medium);
+}
+
+.priority-low {
+  background-color: var(--color-priority-low-bg);
+  color: var(--color-priority-low);
+}
+
+.task-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.task-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.35;
+}
+
+.task-card-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.task-due-date {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   7. Responsive Adaptations
+   ========================================================================== */
+/* Large Tablet Breakpoint */
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+/* Standard Tablet Breakpoint */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0 var(--space-5);
+    gap: var(--space-4);
+  }
+
+  .navbar-profile-meta {
+    display: none;
+  }
+
+  .search-shortcut {
+    display: none;
+  }
+}
+
+/* Small Tablet & Mobile Breakpoint */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .app-content-wrapper {
+    height: auto;
+    overflow: visible;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sidebar-content {
+    max-height: 320px;
+  }
+
+  .navbar {
+    padding: var(--space-3) var(--space-4);
+    height: auto;
+    min-height: var(--header-height);
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .navbar-left {
+    order: 1;
+  }
+
+  .navbar-actions {
+    order: 2;
+  }
+
+  .navbar-center {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .breadcrumb-item,
+  .breadcrumb-separator {
+    display: none;
+  }
+
+  .app-main {
+    padding: var(--space-4);
+  }
+
+  .kanban-board {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .page-header-actions {
+    width: 100%;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+}
+
+/* Compact Mobile Breakpoint */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .stats-section {
+    margin-bottom: var(--space-5);
+  }
+}
