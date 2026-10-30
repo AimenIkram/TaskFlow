@@ -1,15 +1,29 @@
 /**
  * TaskFlow Application Shell
- * Renders the persistent sidebar, top navigation bar, and main workspace.
+ * Renders the persistent sidebar, top navigation bar, main workspace, and task creation modal.
  */
 
+import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import DashboardStats from './components/DashboardStats';
 import KanbanBoard from './components/KanbanBoard';
+import AddTaskModal from './components/AddTaskModal';
+import { SAMPLE_TASKS } from './data/tasks';
 
 function App() {
+  // State to manage the open/closed state of the Add Task modal
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+
+  // Central task state initialized with existing sample tasks
+  const [tasks, setTasks] = useState(SAMPLE_TASKS);
+
+  // Handler to add a newly created task to state immutably
+  const handleAddTask = (newTask) => {
+    setTasks((prevTasks) => [newTask, ...prevTasks]);
+  };
+
   return (
     <div className="app-layout">
       {/* Persistent Left Sidebar */}
@@ -33,8 +47,8 @@ function App() {
               <button
                 type="button"
                 className="btn-primary"
+                onClick={() => setIsAddTaskOpen(true)}
                 aria-label="Add new task"
-                title="Add task (Visual placeholder)"
               >
                 <Plus size={16} strokeWidth={2.5} />
                 <span>Add Task</span>
@@ -47,10 +61,19 @@ function App() {
 
           {/* Main Kanban Task Board */}
           <section className="board-section" aria-label="Kanban Workflow Board">
-            <KanbanBoard />
+            <KanbanBoard tasks={tasks} />
           </section>
         </main>
       </div>
+
+      {/* Task Creation Modal (Mounts fresh with reset state when opened) */}
+      {isAddTaskOpen && (
+        <AddTaskModal
+          isOpen={isAddTaskOpen}
+          onClose={() => setIsAddTaskOpen(false)}
+          onAddTask={handleAddTask}
+        />
+      )}
     </div>
   );
 }
