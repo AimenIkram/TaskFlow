@@ -4,11 +4,12 @@
  */
 
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Kanban, List } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import DashboardStats from './components/DashboardStats';
 import KanbanBoard from './components/KanbanBoard';
+import TaskList from './components/TaskList';
 import AddTaskModal from './components/AddTaskModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
 import { SAMPLE_TASKS, TASK_STATUS } from './data/tasks';
@@ -22,6 +23,9 @@ function App() {
 
   // State to hold the specific task currently pending deletion confirmation (null when no dialog open)
   const [taskToDelete, setTaskToDelete] = useState(null);
+
+  // State to manage the currently active view ('board' | 'list')
+  const [activeView, setActiveView] = useState('board');
 
   // Central task state initialized with existing sample tasks
   const [tasks, setTasks] = useState(SAMPLE_TASKS);
@@ -103,13 +107,43 @@ function App() {
           {/* Main Content Header with Title, Description, and Action Button */}
           <header className="page-header">
             <div className="page-header-info">
-              <h1 className="page-header-title">Task Board</h1>
+              <h1 className="page-header-title">
+                {activeView === 'board' ? 'Task Board' : 'Task List'}
+              </h1>
               <p className="page-header-desc">
-                Organize, track, and manage your daily tasks across different workflow stages.
+                {activeView === 'board'
+                  ? 'Organize, track, and manage your daily tasks across different workflow stages.'
+                  : 'View, filter, and manage all your tasks in a clean tabular list.'}
               </p>
             </div>
 
             <div className="page-header-actions">
+              {/* Board / List View Switcher Control */}
+              <div className="view-switcher" role="radiogroup" aria-label="Select task view">
+                <button
+                  type="button"
+                  className={`view-switcher-btn${activeView === 'board' ? ' active' : ''}`}
+                  onClick={() => setActiveView('board')}
+                  role="radio"
+                  aria-checked={activeView === 'board'}
+                  title="Switch to Kanban Board view"
+                >
+                  <Kanban size={15} strokeWidth={2} aria-hidden="true" />
+                  <span>Board</span>
+                </button>
+                <button
+                  type="button"
+                  className={`view-switcher-btn${activeView === 'list' ? ' active' : ''}`}
+                  onClick={() => setActiveView('list')}
+                  role="radio"
+                  aria-checked={activeView === 'list'}
+                  title="Switch to List view"
+                >
+                  <List size={15} strokeWidth={2} aria-hidden="true" />
+                  <span>List</span>
+                </button>
+              </div>
+
               <button
                 type="button"
                 className="btn-primary"
@@ -125,17 +159,30 @@ function App() {
           {/* Key Metric Overview Cards dynamically derived from tasks state */}
           <DashboardStats tasks={tasks} />
 
-          {/* Main Kanban Task Board */}
-          <section className="board-section" aria-label="Kanban Workflow Board">
-            <KanbanBoard
-              tasks={tasks}
-              onEditTask={handleOpenEditModal}
-              onDeleteTask={handleOpenDeleteModal}
-              onCompleteTask={handleCompleteTask}
-              onOpenAddModal={handleOpenAddModal}
-              onStatusChange={handleStatusChange}
-            />
-          </section>
+          {/* Conditional Rendering of Active Task View: Board or List */}
+          {activeView === 'board' ? (
+            <section className="board-section" aria-label="Kanban Workflow Board">
+              <KanbanBoard
+                tasks={tasks}
+                onEditTask={handleOpenEditModal}
+                onDeleteTask={handleOpenDeleteModal}
+                onCompleteTask={handleCompleteTask}
+                onOpenAddModal={handleOpenAddModal}
+                onStatusChange={handleStatusChange}
+              />
+            </section>
+          ) : (
+            <section className="list-section" aria-label="Task List View">
+              <TaskList
+                tasks={tasks}
+                onEditTask={handleOpenEditModal}
+                onDeleteTask={handleOpenDeleteModal}
+                onCompleteTask={handleCompleteTask}
+                onOpenAddModal={handleOpenAddModal}
+                onStatusChange={handleStatusChange}
+              />
+            </section>
+          )}
         </main>
       </div>
 

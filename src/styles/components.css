@@ -520,6 +520,44 @@
   gap: var(--space-3);
 }
 
+/* Board / List View Switcher Control */
+.view-switcher {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1.2;
+}
+
+.view-switcher-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.view-switcher-btn.active {
+  background-color: var(--color-bg-surface);
+  color: var(--color-brand);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-xs);
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -1249,7 +1287,224 @@
 }
 
 /* ==========================================================================
-   8. Responsive Adaptations
+   8. List View Layout & Task Rows
+   ========================================================================== */
+.list-section {
+  width: 100%;
+  margin-top: var(--space-8);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+}
+
+.section-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.section-count {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  padding: 2px var(--space-2-5);
+  border-radius: var(--radius-full);
+}
+
+.task-list-container {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  overflow-x: auto;
+}
+
+/* Shared CSS Grid layout for both header and task rows */
+.task-list-table-header,
+.task-row {
+  display: grid;
+  grid-template-columns: 28px minmax(220px, 1fr) 95px 85px 125px 95px 64px;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3-5) var(--space-5);
+  min-width: 760px;
+}
+
+.task-list-table-header {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  background-color: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 3px solid transparent;
+}
+
+.col-header {
+  white-space: nowrap;
+}
+
+.col-header-check {
+  width: 28px;
+}
+
+.col-header-actions {
+  text-align: right;
+}
+
+.task-rows-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-row {
+  border-bottom: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg-surface);
+  border-left: 3px solid transparent;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.task-row:last-child {
+  border-bottom: none;
+}
+
+.task-row:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.task-row--completed {
+  border-left-color: var(--color-status-completed);
+}
+
+/* Cell Alignments */
+.task-row-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.task-row-cell--check {
+  justify-content: center;
+}
+
+.task-completed-check-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-xs);
+  color: var(--color-status-completed);
+  background-color: var(--color-status-completed-bg);
+}
+
+.task-row-cell--main {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.task-row-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.task-row-title--completed {
+  color: var(--color-text-secondary);
+}
+
+.task-row-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.task-row-cell--category,
+.task-row-cell--priority,
+.task-row-cell--status,
+.task-row-cell--due {
+  display: flex;
+  align-items: center;
+}
+
+.task-row-cell--actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.task-empty-cell {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Empty State for List View */
+.task-list-empty {
+  background-color: var(--color-bg-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-10) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-3);
+}
+
+.task-list-empty-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-list-empty-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 380px;
+}
+
+.task-list-empty-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.task-list-empty-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+/* ==========================================================================
+   9. Responsive Adaptations
    ========================================================================== */
 /* Large Tablet Breakpoint */
 @media (max-width: 1200px) {
@@ -1343,6 +1598,19 @@
 
   .page-header-actions {
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .view-switcher {
+    width: 100%;
+    display: flex;
+  }
+
+  .view-switcher-btn {
+    flex: 1;
+    justify-content: center;
   }
 
   .btn-primary {
