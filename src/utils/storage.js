@@ -9,8 +9,54 @@
 export const STORAGE_KEYS = Object.freeze({
   TASKS: 'taskflow_tasks',
   CATEGORIES: 'taskflow_categories',
-  THEME: 'taskflow_theme'
+  THEME: 'taskflow_theme',
+  USER_NAME: 'taskflow_user_name'
 });
+
+/**
+ * Validates that the provided user name is a valid non-empty string.
+ *
+ * @param {unknown} name - User name to validate
+ * @returns {boolean} - True if valid, false otherwise
+ */
+export const isValidUserName = (name) => {
+  return typeof name === 'string' && name.trim().length > 0;
+};
+
+/**
+ * Derives clean uppercase initials (1-2 characters) from a given name.
+ * e.g. "Aimen Ikram" -> "AI", "Alex" -> "A", "" -> "TF"
+ *
+ * @param {string} name - Full user name
+ * @returns {string} - Up to two uppercase initials
+ */
+export const getInitials = (name) => {
+  if (!name || typeof name !== 'string') return 'TF';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return 'TF';
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+/**
+ * Returns a personalized, time-of-day greeting (e.g. "Good morning", "Good afternoon", "Good evening").
+ *
+ * @param {Date} [date] - Date instance (defaults to current time)
+ * @returns {string} - Contextual greeting string
+ */
+export const getTimeGreeting = (date = new Date()) => {
+  const hour = date.getHours();
+  if (hour >= 5 && hour < 12) {
+    return 'Good morning';
+  } else if (hour >= 12 && hour < 17) {
+    return 'Good afternoon';
+  } else if (hour >= 17 && hour < 22) {
+    return 'Good evening';
+  }
+  return 'Good evening';
+};
 
 /**
  * Validates that the provided theme string is a supported theme.

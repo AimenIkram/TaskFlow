@@ -16,6 +16,8 @@ import CategoryManager from './components/CategoryManager';
 import CategoryModal from './components/CategoryModal';
 import CategoryDeleteModal from './components/CategoryDeleteModal';
 import FilterToolbar from './components/FilterToolbar';
+import WelcomeScreen from './components/WelcomeScreen';
+import EditProfileModal from './components/EditProfileModal';
 import { SAMPLE_TASKS, TASK_STATUS, getLocalDateString, isTaskOverdue } from './data/tasks';
 import { DEFAULT_CATEGORIES } from './data/categories';
 import {
@@ -24,7 +26,9 @@ import {
   saveToStorage,
   isValidTasksArray,
   isValidCategoriesArray,
-  isValidTheme
+  isValidTheme,
+  isValidUserName,
+  getTimeGreeting
 } from './utils/storage';
 
 function App() {
@@ -38,6 +42,14 @@ function App() {
   const [theme, setTheme] = useState(() =>
     loadFromStorage(STORAGE_KEYS.THEME, 'light', isValidTheme)
   );
+
+  // Central user display name state initialized lazily from LocalStorage
+  const [userName, setUserName] = useState(() =>
+    loadFromStorage(STORAGE_KEYS.USER_NAME, '', isValidUserName)
+  );
+
+  // State to manage whether the Edit Profile modal is open
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   // Central categories state initialized lazily from LocalStorage with starter fallback
   const [categories, setCategories] = useState(() =>
@@ -87,6 +99,13 @@ function App() {
   useEffect(() => {
     saveToStorage(STORAGE_KEYS.THEME, theme);
   }, [theme]);
+
+  // Centralized persistence: save user display name to LocalStorage whenever it updates
+  useEffect(() => {
+    if (userName) {
+      saveToStorage(STORAGE_KEYS.USER_NAME, userName);
+    }
+  }, [userName]);
 
   // Synchronize root class and data-theme attribute on document root for system-wide theming
   useEffect(() => {
@@ -358,10 +377,40 @@ function App() {
     return 'dashboard';
   }, [activeNav, categoryFilter, dueDateFilter]);
 
+  // Profile Handlers
+  const handleOpenEditProfile = () => {
+    setIsEditProfileOpen(true);
+  };
+
+  const handleCloseEditProfile = () => {
+    setIsEditProfileOpen(false);
+  };
+
+  const handleSaveProfile = (newName) => {
+    setUserName(newName);
+    saveToStorage(STORAGE_KEYS.USER_NAME, newName);
+  };
+
+  const handleSaveInitialName = (enteredName) => {
+    setUserName(enteredName);
+    saveToStorage(STORAGE_KEYS.USER_NAME, enteredName);
+  };
+
   // Theme Toggle Handler
   const handleToggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
   };
+
+  // First-time onboarding experience: display welcome screen until name is provided
+  if (!userName) {
+    return (
+      <WelcomeScreen
+        onSaveName={handleSaveInitialName}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
+      />
+    );
+  }
 
   return (
     <div className={`app-layout app--${theme}`}>
@@ -373,6 +422,8 @@ function App() {
         onNavigate={handleNavigate}
         isOpen={isMobileNavOpen}
         onClose={() => setIsMobileNavOpen(false)}
+        userName={userName}
+        onEditProfile={handleOpenEditProfile}
       />
 
       {/* Main Content Column with Navbar and Workspace Area */}
@@ -397,6 +448,8 @@ function App() {
           onToggleTheme={handleToggleTheme}
           isMobileNavOpen={isMobileNavOpen}
           onToggleMobileMenu={() => setIsMobileNavOpen((prev) => !prev)}
+          userName={userName}
+          onEditProfile={handleOpenEditProfile}
         />
 
         <main className="app-main" id="main-content">
@@ -415,6 +468,11 @@ function App() {
               {/* Main Content Header with Title, Description, and Action Button */}
               <header className="page-header">
                 <div className="page-header-info">
+                  <div className="page-header-greeting">
+                    <span className="page-header-greeting-text">
+                      {getTimeGreeting()}, {userName.split(' ')[0] || userName}! 👋
+                    </span>
+                  </div>
                   <h1 className="page-header-title">
                     {activeView === 'board' ? 'Task Board' : 'Task List'}
                   </h1>
@@ -561,6 +619,16 @@ function App() {
           category={categoryToDelete}
           onClose={handleCloseDeleteCategoryModal}
           onConfirm={handleConfirmDeleteCategory}
+        />
+      )}
+
+      {/* Workspace User Profile Editing Dialog */}
+      {isEditProfileOpen && (
+        <EditProfileModal
+          isOpen={isEditProfileOpen}
+          currentName={userName}
+          onClose={handleCloseEditProfile}
+          onSave={handleSaveProfile}
         />
       )}
     </div>

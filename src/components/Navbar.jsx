@@ -5,6 +5,7 @@
 
 import { Sun, Moon, Bell, ChevronRight, Menu } from 'lucide-react';
 import SearchBar from './ui/SearchBar';
+import { getInitials } from '../utils/storage';
 
 function Navbar({
   pageTitle = 'Dashboard',
@@ -15,7 +16,9 @@ function Navbar({
   theme = 'light',
   onToggleTheme,
   isMobileNavOpen = false,
-  onToggleMobileMenu
+  onToggleMobileMenu,
+  userName = 'User',
+  onEditProfile
 }) {
   return (
     <header className="navbar" aria-label="Top Navigation">
@@ -89,15 +92,21 @@ function Navbar({
         <span className="navbar-divider" aria-hidden="true" />
 
         {/* Profile Area */}
-        <div className="navbar-profile" title="Alex Morgan (alex@taskflow.dev)">
+        <button
+          type="button"
+          className="navbar-profile navbar-profile-btn"
+          onClick={onEditProfile}
+          title={`Profile: ${userName} (Click to edit)`}
+          aria-label={`Profile: ${userName}. Click to edit name`}
+        >
           <div className="navbar-avatar" aria-hidden="true">
-            AM
+            {getInitials(userName)}
           </div>
           <div className="navbar-profile-meta">
-            <span className="navbar-profile-name">Alex Morgan</span>
+            <span className="navbar-profile-name">{userName}</span>
             <span className="navbar-profile-role">Productivity Pro</span>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );

@@ -12,6 +12,7 @@ import {
 } from '../data/navigation';
 import { DEFAULT_CATEGORIES } from '../data/categories';
 import { getLocalDateString } from '../data/tasks';
+import { getInitials } from '../utils/storage';
 
 function Sidebar({
   categories = DEFAULT_CATEGORIES,
@@ -19,7 +20,9 @@ function Sidebar({
   currentActiveId = 'dashboard',
   onNavigate,
   isOpen = false,
-  onClose
+  onClose,
+  userName = 'Workspace User',
+  onEditProfile
 }) {
   const activeId = currentActiveId;
 
@@ -204,15 +207,24 @@ function Sidebar({
         </ul>
 
         {/* User Workspace Profile Preview */}
-        <div className="user-profile">
+        <button
+          type="button"
+          className="user-profile user-profile-btn"
+          onClick={() => {
+            if (onClose) onClose();
+            if (onEditProfile) onEditProfile();
+          }}
+          title={`Profile: ${userName} (Click to edit)`}
+          aria-label={`Profile: ${userName}. Click to edit name`}
+        >
           <div className="user-avatar" aria-hidden="true">
-            TF
+            {getInitials(userName)}
           </div>
           <div className="user-details">
-            <span className="user-name">TaskFlow Workspace</span>
+            <span className="user-name">{userName}</span>
             <span className="user-role">Personal Pro</span>
           </div>
-        </div>
+        </button>
       </div>
     </aside>
   </>
