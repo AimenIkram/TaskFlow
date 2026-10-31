@@ -3,6 +3,7 @@
  * Displays a single task item inside a Kanban column with an edit action.
  */
 
+import { useState } from 'react';
 import { Calendar, Pencil, Trash2, Check, AlertCircle } from 'lucide-react';
 import { TASK_STATUS, formatDueDate, isTaskOverdue } from '../../data/tasks';
 
@@ -17,15 +18,29 @@ function TaskCard({
   const { title, description, priority, dueDate, category, categoryId, status } = task;
   const isCompleted = status === TASK_STATUS.COMPLETED;
   const isOverdue = isTaskOverdue(task);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Resolve category from shared categories collection via categoryId with name fallback
   const matchedCategory = categories.find(
     (c) => c.id === categoryId || (category && c.name.toLowerCase() === category.toLowerCase())
   );
 
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData('text/plain', task.id);
+    e.dataTransfer.effectAllowed = 'move';
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   return (
     <article
-      className={`task-card${isCompleted ? ' task-card--completed' : ''}${isOverdue ? ' task-card--overdue' : ''}`}
+      draggable={true}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      className={`task-card${isCompleted ? ' task-card--completed' : ''}${isOverdue ? ' task-card--overdue' : ''}${isDragging ? ' task-card--dragging' : ''}`}
       aria-label={`Task: ${title}`}
     >
       {/* Card Header: Category, Priority, and Overdue Badge */}
@@ -86,7 +101,11 @@ function TaskCard({
           <span />
         )}
 
-        <div className="task-card-actions">
+        <div
+          className="task-card-actions"
+          draggable={false}
+          onDragStart={(e) => e.stopPropagation()}
+        >
           {/* Status selector dropdown */}
           {onStatusChange && (
             <select

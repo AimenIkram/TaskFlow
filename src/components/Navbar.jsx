@@ -3,7 +3,7 @@
  * Displays the current view breadcrumb, search bar, and action controls.
  */
 
-import { Sun, Bell, ChevronRight } from 'lucide-react';
+import { Sun, Moon, Bell, ChevronRight, Menu } from 'lucide-react';
 import SearchBar from './ui/SearchBar';
 
 function Navbar({
@@ -11,12 +11,29 @@ function Navbar({
   parentTitle = 'Workspace',
   onNavigate,
   searchQuery = '',
-  onSearchChange
+  onSearchChange,
+  theme = 'light',
+  onToggleTheme,
+  isMobileNavOpen = false,
+  onToggleMobileMenu
 }) {
   return (
     <header className="navbar" aria-label="Top Navigation">
-      {/* Left Area: Breadcrumbs & View Title */}
+      {/* Left Area: Mobile Menu Toggle, Breadcrumbs & View Title */}
       <div className="navbar-left">
+        {onToggleMobileMenu && (
+          <button
+            type="button"
+            className="navbar-icon-btn navbar-menu-btn"
+            onClick={onToggleMobileMenu}
+            aria-label={isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileNavOpen}
+            title="Navigation Menu"
+          >
+            <Menu size={20} strokeWidth={2} />
+          </button>
+        )}
+
         <nav className="navbar-breadcrumb" aria-label="Breadcrumb">
           <button
             type="button"
@@ -42,14 +59,19 @@ function Navbar({
 
       {/* Right Area: Action Controls & User Profile */}
       <div className="navbar-actions">
-        {/* Theme Toggle Button (Visual only) */}
+        {/* Interactive Theme Toggle Button */}
         <button
           type="button"
-          className="navbar-icon-btn"
-          aria-label="Toggle visual theme"
-          title="Toggle theme (Light / Dark)"
+          className="navbar-icon-btn navbar-theme-toggle"
+          onClick={onToggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+          title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
         >
-          <Sun size={18} strokeWidth={2} />
+          {theme === 'dark' ? (
+            <Sun size={18} strokeWidth={2} className="theme-toggle-icon" />
+          ) : (
+            <Moon size={18} strokeWidth={2} className="theme-toggle-icon" />
+          )}
         </button>
 
         {/* Notifications Button with Status Dot */}

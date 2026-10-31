@@ -5,7 +5,6 @@
 
 import {
   LayoutDashboard,
-  CheckSquare,
   Calendar,
   Clock,
   Settings,
@@ -23,16 +22,10 @@ export const MAIN_NAV_ITEMS = [
     badge: null
   },
   {
-    id: 'my-tasks',
-    label: 'My Tasks',
-    icon: CheckSquare,
-    badge: '12'
-  },
-  {
     id: 'today',
     label: 'Today',
     icon: Calendar,
-    badge: '4'
+    badge: null
   },
   {
     id: 'upcoming',

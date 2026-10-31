@@ -3,6 +3,7 @@
  * Represents a single workflow stage containing a list of TaskCards.
  */
 
+import { useState, useRef } from 'react';
 import { Inbox } from 'lucide-react';
 import TaskCard from './ui/TaskCard';
 
@@ -13,12 +14,56 @@ function KanbanColumn({
   onEditTask,
   onDeleteTask,
   onCompleteTask,
-  onStatusChange
+  onStatusChange,
+  onTaskDrop
 }) {
   const { title, icon: Icon, color } = column;
+  const [isDragOver, setIsDragOver] = useState(false);
+  const dragCounterRef = useRef(0);
+
+  const handleDropAction = onTaskDrop || onStatusChange;
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    dragCounterRef.current += 1;
+    if (dragCounterRef.current > 0) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    dragCounterRef.current -= 1;
+    if (dragCounterRef.current <= 0) {
+      dragCounterRef.current = 0;
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    dragCounterRef.current = 0;
+    const taskId = e.dataTransfer.getData('text/plain');
+    if (taskId && handleDropAction) {
+      handleDropAction(taskId, column.id);
+    }
+  };
 
   return (
-    <section className="kanban-column" aria-label={`${title} Column (${tasks.length} tasks)`}>
+    <section
+      className={`kanban-column${isDragOver ? ' kanban-column--drag-over' : ''}`}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      aria-label={`${title} Column (${tasks.length} tasks)`}
+    >
       {/* Column Header */}
       <header className="kanban-column-header">
         <div className="kanban-column-title-group">

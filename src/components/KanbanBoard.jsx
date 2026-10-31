@@ -86,6 +86,7 @@ function KanbanBoard({
             onDeleteTask={onDeleteTask}
             onCompleteTask={onCompleteTask}
             onStatusChange={onStatusChange}
+            onTaskDrop={onStatusChange}
           />
         );
       })}

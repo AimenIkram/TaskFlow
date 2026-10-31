@@ -23,12 +23,21 @@ import {
   loadFromStorage,
   saveToStorage,
   isValidTasksArray,
-  isValidCategoriesArray
+  isValidCategoriesArray,
+  isValidTheme
 } from './utils/storage';
 
 function App() {
   // Navigation state ('dashboard' | 'categories')
   const [activeNav, setActiveNav] = useState('dashboard');
+
+  // Mobile navigation drawer state (open / closed)
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  // Central theme state initialized lazily from LocalStorage with 'light' fallback
+  const [theme, setTheme] = useState(() =>
+    loadFromStorage(STORAGE_KEYS.THEME, 'light', isValidTheme)
+  );
 
   // Central categories state initialized lazily from LocalStorage with starter fallback
   const [categories, setCategories] = useState(() =>
@@ -73,6 +82,19 @@ function App() {
   useEffect(() => {
     saveToStorage(STORAGE_KEYS.CATEGORIES, categories);
   }, [categories]);
+
+  // Centralized persistence: save theme to LocalStorage whenever theme changes
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.THEME, theme);
+  }, [theme]);
+
+  // Synchronize root class and data-theme attribute on document root for system-wide theming
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove('app--light', 'app--dark');
+    root.classList.add(`app--${theme}`);
+    root.setAttribute('data-theme', theme);
+  }, [theme]);
 
   // Track if any filter or search condition is active
   const isFiltered = Boolean(
@@ -199,13 +221,22 @@ function App() {
     );
   };
 
-  // Handler to update a task's status immutably using map() and object spread
-  const handleStatusChange = (taskToUpdate, newStatus) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskToUpdate.id ? { ...task, status: newStatus } : task
-      )
-    );
+  // Handler to update a task's status immutably using map() and object spread.
+  // Supports receiving either a task object or a taskId string.
+  // Guards against unnecessary state updates if task is already in target status.
+  const handleStatusChange = (taskOrId, newStatus) => {
+    const targetId = typeof taskOrId === 'object' && taskOrId !== null ? taskOrId.id : taskOrId;
+    if (!targetId || !newStatus) return;
+
+    setTasks((prevTasks) => {
+      const existingTask = prevTasks.find((task) => task.id === targetId);
+      if (!existingTask || existingTask.status === newStatus) {
+        return prevTasks;
+      }
+      return prevTasks.map((task) =>
+        task.id === targetId ? { ...task, status: newStatus } : task
+      );
+    });
   };
 
   // Handler to mark a task as completed immutably using map()
@@ -268,30 +299,104 @@ function App() {
 
   // Central Navigation Handler
   const handleNavigate = (navId) => {
-    if (navId === 'categories' || categories.some((c) => c.id === navId)) {
+    setIsMobileNavOpen(false);
+
+    // If opening Category Manager view
+    if (navId === 'categories' || navId === 'settings') {
       setActiveNav('categories');
-    } else {
-      setActiveNav('dashboard');
+      return;
+    }
+
+    // All other navigation items direct to the Dashboard view
+    setActiveNav('dashboard');
+
+    if (navId === 'dashboard') {
+      // Clear filters so all tasks are visible
+      setCategoryFilter('all');
+      setDueDateFilter('all');
+      setStatusFilter('all');
+      setPriorityFilter('all');
+      setSearchQuery('');
+    } else if (navId === 'today') {
+      // Filter exclusively to tasks due today
+      setDueDateFilter('today');
+      setCategoryFilter('all');
+      setStatusFilter('all');
+      setPriorityFilter('all');
+      setSearchQuery('');
+    } else if (navId === 'upcoming') {
+      // Filter exclusively to upcoming future tasks
+      setDueDateFilter('upcoming');
+      setCategoryFilter('all');
+      setStatusFilter('all');
+      setPriorityFilter('all');
+      setSearchQuery('');
+    } else if (categories.some((c) => c.id === navId)) {
+      // Filter exclusively to tasks belonging to the clicked category
+      setCategoryFilter(navId);
+      setDueDateFilter('all');
+      setStatusFilter('all');
+      setPriorityFilter('all');
+      setSearchQuery('');
     }
   };
 
+  // Derive which navigation item or category is actively selected in the sidebar
+  const currentActiveId = useMemo(() => {
+    if (activeNav === 'categories') {
+      return 'categories';
+    }
+    if (categoryFilter !== 'all') {
+      return categoryFilter;
+    }
+    if (dueDateFilter === 'today') {
+      return 'today';
+    }
+    if (dueDateFilter === 'upcoming') {
+      return 'upcoming';
+    }
+    return 'dashboard';
+  }, [activeNav, categoryFilter, dueDateFilter]);
+
+  // Theme Toggle Handler
+  const handleToggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+  };
+
   return (
-    <div className="app-layout">
-      {/* Persistent Left Sidebar */}
+    <div className={`app-layout app--${theme}`}>
+      {/* Sidebar Navigation (Fixed on desktop, off-canvas drawer on tablet/mobile) */}
       <Sidebar
         categories={categories}
-        currentActiveId={activeNav}
+        tasks={tasks}
+        currentActiveId={currentActiveId}
         onNavigate={handleNavigate}
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
       />
 
       {/* Main Content Column with Navbar and Workspace Area */}
       <div className="app-content-wrapper">
         <Navbar
-          pageTitle={activeNav === 'categories' ? 'Categories' : 'Dashboard'}
+          pageTitle={
+            activeNav === 'categories'
+              ? 'Categories'
+              : categoryFilter !== 'all'
+              ? categories.find((c) => c.id === categoryFilter)?.name || 'Category'
+              : dueDateFilter === 'today'
+              ? 'Today'
+              : dueDateFilter === 'upcoming'
+              ? 'Upcoming'
+              : 'Dashboard'
+          }
           parentTitle="Workspace"
           onNavigate={handleNavigate}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          theme={theme}
+          onToggleTheme={handleToggleTheme}
+          isMobileNavOpen={isMobileNavOpen}
+          onToggleMobileMenu={() => setIsMobileNavOpen((prev) => !prev)}
         />
 
         <main className="app-main" id="main-content">

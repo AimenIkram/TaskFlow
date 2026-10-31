@@ -8,8 +8,20 @@
  */
 export const STORAGE_KEYS = Object.freeze({
   TASKS: 'taskflow_tasks',
-  CATEGORIES: 'taskflow_categories'
+  CATEGORIES: 'taskflow_categories',
+  THEME: 'taskflow_theme'
 });
+
+/**
+ * Validates that the provided theme string is a supported theme.
+ * Only 'light' and 'dark' are valid.
+ *
+ * @param {unknown} theme - Theme value to validate
+ * @returns {boolean} - True if valid, false otherwise
+ */
+export const isValidTheme = (theme) => {
+  return theme === 'light' || theme === 'dark';
+};
 
 /**
  * Validates that the provided data is a valid tasks array.

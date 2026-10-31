@@ -55,6 +55,7 @@ function AddTaskModal({
   const [categoryId, setCategoryId] = useState(initialCategoryId);
   const [priority, setPriority] = useState(taskToEdit?.priority || TASK_PRIORITY.MEDIUM);
   const [dueDate, setDueDate] = useState(initialDueDate);
+  const [titleError, setTitleError] = useState('');
 
   // Handle closing with the Escape key & locking background scroll while mounted
   useEffect(() => {
@@ -86,6 +87,7 @@ function AddTaskModal({
 
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
+      setTitleError('Task title is required.');
       return;
     }
 
@@ -171,13 +173,23 @@ function AddTaskModal({
             <input
               id="task-title"
               type="text"
-              className="form-input"
+              className={`form-input${titleError ? ' form-input--error' : ''}`}
               placeholder="e.g., Design System Documentation"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (titleError) setTitleError('');
+              }}
+              aria-invalid={Boolean(titleError)}
+              aria-describedby={titleError ? 'task-title-error' : undefined}
               autoFocus
               required
             />
+            {titleError && (
+              <span id="task-title-error" className="form-error-msg" role="alert">
+                {titleError}
+              </span>
+            )}
           </div>
 
           {/* Description Input */}

@@ -1,73 +1,12 @@
 /**
  * TaskFlow Design Tokens
  * Centralized design system variables for colors, typography, spacing, shadows, and radii.
+ * Supports both Light and Dark + Neon themes.
  */
 
 :root {
   /* ==========================================================================
-     Color Palette - Brand & Semantics
-     ========================================================================== */
-  --color-brand: #4f46e5;          /* Modern indigo primary */
-  --color-brand-hover: #4338ca;    /* Darker indigo for hover states */
-  --color-brand-light: #eef2ff;    /* Subtle indigo tint for active nav items */
-  --color-brand-border: #c7d2fe;   /* Border highlight */
-
-  /* Surface & Background Colors */
-  --color-bg-app: #f8fafc;         /* App canvas backdrop (slate-50) */
-  --color-bg-surface: #ffffff;     /* Sidebar & card background */
-  --color-bg-subtle: #f1f5f9;      /* Subtle hover/tag background (slate-100) */
-  --color-bg-hover: #f8fafc;       /* Item hover background */
-  --color-bg-active: #eef2ff;      /* Item active background */
-
-  /* Text Colors */
-  --color-text-primary: #0f172a;   /* Primary dark charcoal text (slate-900) */
-  --color-text-secondary: #475569; /* Secondary muted text (slate-600) */
-  --color-text-muted: #94a3b8;     /* Inactive/placeholder text (slate-400) */
-  --color-text-brand: #4f46e5;     /* Text matching brand accent */
-  --color-text-inverse: #ffffff;   /* Text on dark/brand elements */
-
-  /* Border Colors */
-  --color-border: #e2e8f0;         /* Default structural border (slate-200) */
-  --color-border-subtle: #f1f5f9;  /* Muted dividers (slate-100) */
-
-  /* Category Indicator Colors */
-  --color-category-work: #3b82f6;      /* Blue */
-  --color-category-personal: #10b981;  /* Emerald */
-  --color-category-projects: #f59e0b;  /* Amber */
-  --color-category-learning: #8b5cf6;  /* Purple */
-
-  /* Badge & Tag Colors */
-  --color-badge-bg: #f1f5f9;
-  --color-badge-text: #475569;
-  --color-badge-active-bg: #e0e7ff;
-  --color-badge-active-text: #4338ca;
-  --color-avatar-bg: #e0e7ff;
-
-  /* Metric & Status Card Colors */
-  --color-status-total: #4f46e5;
-  --color-status-total-bg: #eef2ff;
-  --color-status-todo: #f59e0b;
-  --color-status-todo-bg: #fef3c7;
-  --color-status-progress: #3b82f6;
-  --color-status-progress-bg: #eff6ff;
-  --color-status-completed: #10b981;
-  --color-status-completed-bg: #ecfdf5;
-
-  /* Priority Indicator Colors */
-  --color-priority-high: #ef4444;
-  --color-priority-high-bg: #fef2f2;
-  --color-priority-medium: #f59e0b;
-  --color-priority-medium-bg: #fffbeb;
-  --color-priority-low: #3b82f6;
-  --color-priority-low-bg: #eff6ff;
-
-  /* Destructive & Danger Action Colors */
-  --color-danger: #ef4444;
-  --color-danger-hover: #dc2626;
-  --color-danger-bg: #fef2f2;
-
-  /* ==========================================================================
-     Typography
+     Invariant Typography Tokens
      ========================================================================== */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -119,13 +58,6 @@
   --radius-full: 9999px;
 
   /* ==========================================================================
-     Elevation & Shadows
-     ========================================================================== */
-  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
-
-  /* ==========================================================================
      Layout & Dimensions
      ========================================================================== */
   --sidebar-width: 260px;
@@ -134,4 +66,163 @@
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Light Theme (Default)
+   Clean, modern, professional SaaS appearance
+   ========================================================================== */
+:root,
+.app--light,
+[data-theme='light'] {
+  /* Brand & Semantics */
+  --color-brand: #4f46e5;          /* Modern indigo primary */
+  --color-brand-hover: #4338ca;    /* Darker indigo for hover states */
+  --color-brand-light: #eef2ff;    /* Subtle indigo tint for active nav items */
+  --color-brand-border: #c7d2fe;   /* Border highlight */
+  --color-accent-violet: #8b5cf6;  /* Purple / violet secondary */
+  --color-accent-violet-light: #f5f3ff;
+
+  /* Surface & Background Colors */
+  --color-bg-app: #f8fafc;         /* App canvas backdrop (slate-50) */
+  --color-bg-surface: #ffffff;     /* Sidebar & card background */
+  --color-bg-subtle: #f1f5f9;      /* Subtle hover/tag background (slate-100) */
+  --color-bg-hover: #f8fafc;       /* Item hover background */
+  --color-bg-active: #eef2ff;      /* Item active background */
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;   /* Primary dark charcoal text (slate-900) */
+  --color-text-secondary: #475569; /* Secondary muted text (slate-600) */
+  --color-text-muted: #94a3b8;     /* Inactive/placeholder text (slate-400) */
+  --color-text-brand: #4f46e5;     /* Text matching brand accent */
+  --color-text-inverse: #ffffff;   /* Text on dark/brand elements */
+
+  /* Border Colors */
+  --color-border: #e2e8f0;         /* Default structural border (slate-200) */
+  --color-border-subtle: #f1f5f9;  /* Muted dividers (slate-100) */
+  --color-border-glow: rgba(79, 70, 229, 0.25);
+
+  /* Category Indicator Colors */
+  --color-category-work: #3b82f6;      /* Blue */
+  --color-category-personal: #10b981;  /* Emerald */
+  --color-category-projects: #f59e0b;  /* Amber */
+  --color-category-learning: #8b5cf6;  /* Purple */
+
+  /* Badge & Tag Colors */
+  --color-badge-bg: #f1f5f9;
+  --color-badge-text: #475569;
+  --color-badge-active-bg: #e0e7ff;
+  --color-badge-active-text: #4338ca;
+  --color-avatar-bg: #e0e7ff;
+
+  /* Metric & Status Card Colors */
+  --color-status-total: #4f46e5;
+  --color-status-total-bg: #eef2ff;
+  --color-status-todo: #f59e0b;
+  --color-status-todo-bg: #fef3c7;
+  --color-status-progress: #3b82f6;
+  --color-status-progress-bg: #eff6ff;
+  --color-status-completed: #10b981;
+  --color-status-completed-bg: #ecfdf5;
+
+  /* Priority Indicator Colors */
+  --color-priority-high: #ef4444;
+  --color-priority-high-bg: #fef2f2;
+  --color-priority-medium: #f59e0b;
+  --color-priority-medium-bg: #fffbeb;
+  --color-priority-low: #3b82f6;
+  --color-priority-low-bg: #eff6ff;
+
+  /* Destructive & Danger Action Colors */
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+  --color-danger-bg: #fef2f2;
+
+  /* Elevation & Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --shadow-brand: 0 1px 2px rgba(79, 70, 229, 0.2);
+  --shadow-brand-hover: 0 4px 6px -1px rgba(79, 70, 229, 0.25);
+  --shadow-glow-cyan: none;
+  --shadow-glow-violet: none;
+}
+
+/* ==========================================================================
+   Dark + Neon Theme
+   Deep charcoal & obsidian canvas with electric cyan and violet accents
+   ========================================================================== */
+.app--dark,
+[data-theme='dark'] {
+  /* Brand & Semantics (Electric Neon Cyan & Violet) */
+  --color-brand: #00f0ff;          /* High-voltage electric cyan */
+  --color-brand-hover: #38bdf8;    /* Luminous sky cyan on hover */
+  --color-brand-light: rgba(0, 240, 255, 0.12); /* Subtle neon glow wash */
+  --color-brand-border: rgba(0, 240, 255, 0.35); /* Neon accent border */
+  --color-accent-violet: #a855f7;  /* Vivid electric violet */
+  --color-accent-violet-light: rgba(168, 85, 247, 0.15);
+
+  /* Surface & Background Colors */
+  --color-bg-app: #090d16;         /* Deep obsidian canvas */
+  --color-bg-surface: #111726;     /* Dark slate elevated surface for cards, sidebars, modals */
+  --color-bg-subtle: #0d1322;      /* Track & muted input backdrop */
+  --color-bg-hover: #172033;       /* Interactive hover state */
+  --color-bg-active: rgba(0, 240, 255, 0.12); /* Neon active fill */
+
+  /* Text Colors */
+  --color-text-primary: #f8fafc;   /* Crisp, bright readable text */
+  --color-text-secondary: #94a3b8; /* Muted secondary slate */
+  --color-text-muted: #64748b;     /* Inactive/placeholder text */
+  --color-text-brand: #00f0ff;     /* Neon cyan text for highlighted elements */
+  --color-text-inverse: #090d16;   /* Deep charcoal for readable text on neon buttons */
+
+  /* Border Colors */
+  --color-border: #1e293b;         /* Slate-800 structural border */
+  --color-border-subtle: #141c2c;  /* Subtle dividers */
+  --color-border-glow: rgba(0, 240, 255, 0.35);
+
+  /* Category Indicator Colors (Luminous versions) */
+  --color-category-work: #38bdf8;
+  --color-category-personal: #34d399;
+  --color-category-projects: #fbbf24;
+  --color-category-learning: #c084fc;
+
+  /* Badge & Tag Colors */
+  --color-badge-bg: #151e2e;
+  --color-badge-text: #94a3b8;
+  --color-badge-active-bg: rgba(0, 240, 255, 0.16);
+  --color-badge-active-text: #00f0ff;
+  --color-avatar-bg: rgba(168, 85, 247, 0.22);
+
+  /* Metric & Status Card Colors */
+  --color-status-total: #00f0ff;
+  --color-status-total-bg: rgba(0, 240, 255, 0.1);
+  --color-status-todo: #fbbf24;
+  --color-status-todo-bg: rgba(251, 191, 36, 0.1);
+  --color-status-progress: #38bdf8;
+  --color-status-progress-bg: rgba(56, 189, 248, 0.1);
+  --color-status-completed: #34d399;
+  --color-status-completed-bg: rgba(52, 211, 153, 0.1);
+
+  /* Priority Indicator Colors */
+  --color-priority-high: #f87171;
+  --color-priority-high-bg: rgba(248, 113, 113, 0.14);
+  --color-priority-medium: #fbbf24;
+  --color-priority-medium-bg: rgba(251, 191, 36, 0.14);
+  --color-priority-low: #38bdf8;
+  --color-priority-low-bg: rgba(56, 189, 248, 0.14);
+
+  /* Destructive & Danger Action Colors */
+  --color-danger: #f43f5e;
+  --color-danger-hover: #e11d48;
+  --color-danger-bg: rgba(244, 63, 94, 0.15);
+
+  /* Elevation & Selective Neon Glow */
+  --shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 6px 0 rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 6px 18px -2px rgba(0, 0, 0, 0.8);
+  --shadow-brand: 0 0 14px rgba(0, 240, 255, 0.35);
+  --shadow-brand-hover: 0 0 20px rgba(0, 240, 255, 0.55);
+  --shadow-glow-cyan: 0 0 14px rgba(0, 240, 255, 0.3);
+  --shadow-glow-violet: 0 0 14px rgba(168, 85, 247, 0.3);
 }
