@@ -3,7 +3,7 @@
  * Renders the persistent sidebar, top navigation bar, main workspace, and task modal.
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Plus, Kanban, List } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -18,13 +18,22 @@ import CategoryDeleteModal from './components/CategoryDeleteModal';
 import FilterToolbar from './components/FilterToolbar';
 import { SAMPLE_TASKS, TASK_STATUS, getLocalDateString, isTaskOverdue } from './data/tasks';
 import { DEFAULT_CATEGORIES } from './data/categories';
+import {
+  STORAGE_KEYS,
+  loadFromStorage,
+  saveToStorage,
+  isValidTasksArray,
+  isValidCategoriesArray
+} from './utils/storage';
 
 function App() {
   // Navigation state ('dashboard' | 'categories')
   const [activeNav, setActiveNav] = useState('dashboard');
 
-  // Central categories state initialized with the 4 predefined starter categories
-  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+  // Central categories state initialized lazily from LocalStorage with starter fallback
+  const [categories, setCategories] = useState(() =>
+    loadFromStorage(STORAGE_KEYS.CATEGORIES, DEFAULT_CATEGORIES, isValidCategoriesArray)
+  );
 
   // Category modal states
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -50,8 +59,20 @@ function App() {
   // State to manage the currently active view ('board' | 'list')
   const [activeView, setActiveView] = useState('board');
 
-  // Central task state initialized with existing sample tasks
-  const [tasks, setTasks] = useState(SAMPLE_TASKS);
+  // Central task state initialized lazily from LocalStorage with sample tasks fallback
+  const [tasks, setTasks] = useState(() =>
+    loadFromStorage(STORAGE_KEYS.TASKS, SAMPLE_TASKS, isValidTasksArray)
+  );
+
+  // Centralized persistence: save tasks to LocalStorage whenever tasks change
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.TASKS, tasks);
+  }, [tasks]);
+
+  // Centralized persistence: save categories to LocalStorage whenever categories change
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.CATEGORIES, categories);
+  }, [categories]);
 
   // Track if any filter or search condition is active
   const isFiltered = Boolean(
